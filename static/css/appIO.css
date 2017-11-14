@@ -1,0 +1,94 @@
+/* Custom Stylesheet */
+/**
+ * Use this file to override Materialize files so you can update
+ * the core Materialize files in the future
+ *
+ * Made By MaterializeCSS.com
+ */
+
+.icon-block {
+    padding: 0 15px;
+}
+
+.icon-block .material-icons {
+    font-size: inherit;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#wrapper {
+    height: 100%;
+    width: 100%;
+    display: table;
+}
+
+#header {
+    background-color: #f00;
+    display: table-row;
+}
+
+#footer {
+    background-color: mediumaquamarine;
+    display: table-row;
+}
+
+.footer-content {
+    margin: 10px 0;
+    text-align: center;
+}
+
+#playground {
+    background-color: grey;
+    color: black;
+    height: 100%;
+    display: table-row;
+}
+
+.grid {
+    height: 100%;
+}
+
+.grid .item {
+    background-color: rgba(0, 128, 0, 0.14);
+    display: inline-block;
+    vertical-align: middle;
+    color: black;
+    margin: 2px;
+    overflow: hidden;
+    text-align: center;
+}
+
+.grid .item div {
+    align-self: center;
+    justify-self: center;
+}
+
+.grid .current-user-item {
+    background: royalblue !important;
+    font-weight: bold;
+    color: white;
+}
+
+.grid .other-user-item {
+    background: indianred;
+}
+
+#symbol {
+    padding: 5px 10px;
+    color: white;
+    background: royalblue;
+}
+
+.brand-logo {
+    font-size: 1.7em;
+    color: white;
+    margin: 0.7em 0;
+    -webkit-margin-before: 0.7em;
+    -webkit-margin-after: 0.7em;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+}
