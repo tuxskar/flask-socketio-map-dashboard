@@ -27,18 +27,26 @@ html, body {
 }
 
 #header {
+    height: 70px;
     background-color: #f00;
     display: table-row;
 }
 
 #footer {
+    height: 80px;
     background-color: mediumaquamarine;
     display: table-row;
+    text-align: center;
 }
 
 .footer-content {
-    margin: 10px 0;
     text-align: center;
+
+}
+
+.footer-content div {
+    display: inline-block;
+    margin: 5px 15px;
 }
 
 #playground {

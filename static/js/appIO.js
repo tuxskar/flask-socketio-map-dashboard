@@ -26,7 +26,6 @@ $(window).load(function () {
                 dataUrl: '/static/libs/json/esp.topo.json',
                 highlightBorderColor: '#6e71da',
                 popupTemplate: function (geography, data) {
-                    console.log(geography, data);
                     return '<div class="hoverinfoww">' + geography.properties.name + '</div>'
                 },
                 highlightBorderWidth: 3
@@ -47,6 +46,25 @@ $(window).load(function () {
      */
     function doneMap(map) {
         map.labels();
+
+        // Adding all the posibilities to the select input
+        var provinceIDs = [];
+        d3.selectAll(".labels text").each(function (d, i) {
+            var provinceID = d3.select(this).attr("id");
+            if (provinceID !== "-99") // library default value for unmmaped nodes
+                provinceIDs.push(provinceID)
+        });
+
+        // Adding a select with all the provinces
+        var $provincesSelector = $('#provinceElement');
+        provinceIDs.forEach(function (provinceID, idx) {
+            $provincesSelector.append($('<option/>').attr('id', provinceID).text(provinceID))
+        });
+
+
+        // Initializing materialize
+        $('select').material_select();
+
         $('#Huelva').text('78');
         $('#Madrid').text('46');
     }

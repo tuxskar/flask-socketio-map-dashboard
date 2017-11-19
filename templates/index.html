@@ -3,22 +3,13 @@
 <head>
     <title>Codemotion 2017 Real-Time map dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../static/libs/css/materialize.min.css">
-    <link rel="stylesheet" href="../static/css/appIO.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    {% assets output="gen/libs.css",
+        "libs/css/materialize.css",
+        "css/appIO.css" %}
+        <link rel="stylesheet" href="{{ ASSET_URL }}">
 
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
-
-{#{% assets filters="jsmin", output="gen/libs.js",#}
-{% assets output="gen/libs.js",
-"libs/js/socket.io.min.js", "libs/js/jquery.2.2.4.min.js",
-"libs/js/materialize.js"
-, "libs/js/datamaps.esp.js"
-        %}
-    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-{% endassets %}
+    {% endassets %}
 
 </head>
 
@@ -35,25 +26,33 @@
     </div>
 
     <div id="playground" class="row">
-{#        <div id="map" style="position: relative; width: 500px; height: 300px;"></div>#}
         <div id="map"></div>
-
     </div>
 
 
     <div id="footer">
         <div class="col s12 footer-content">
-        input for maps up and down!
+            <button class="waves-effect waves-light btn"><i class="material-icons">thumb_down</i></button>
+            <div class="input-field col s12 m6">
+                <select id="provinceElement">
+                    <option value="" disabled selected>Choose a province</option>
+                </select>
+            </div>
+            <a class="waves-effect waves-light btn"><i class="material-icons">thumb_up</i></a>
         </div>
     </div>
-    <!-- Compiled and minified JavaScript -->
-
 
 
 </div>
 
 
 </body>
+{% assets filters="jsmin", output="gen/libs.js",
+"libs/js/socket.io.min.js", "libs/js/jquery.2.2.4.min.js",
+"libs/js/materialize.js"
+, "libs/js/d3.3.5.3.min.js", "libs/js/topojson.1.6.9.min.js", "libs/js/datamaps.esp.js" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
 
 {% assets output="gen/appIO.js",
 "js/appIO.js" %}
@@ -61,10 +60,9 @@
 {% endassets %}
 
 {% if auto_move %}
-    {% assets output="gen/appIO-auto_move.js",
-"js/auto-vote.js" %}
+    {% assets output="gen/appIO-auto_move.js", "js/auto-vote.js" %}
         <script>
-        userMaxTimeWait = {{ max_time_wait }};
+            userMaxTimeWait = {{ max_time_wait }};
         </script>
         <script type="text/javascript" src="{{ ASSET_URL }}"></script>
 

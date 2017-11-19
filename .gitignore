@@ -92,3 +92,5 @@ datamaps/
 node_modules/
 static/gen/
 static/css/*.bkp.*
+*.DS_Store
+.idea/*

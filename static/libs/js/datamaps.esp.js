@@ -422,7 +422,6 @@
             .style("stroke-width", options.lineWidth || 1)
         }
 
-        console.log('Dentro del meoyo, ', d);
         layer.append("text")
           .attr("x", x)
           .attr("y", y)
