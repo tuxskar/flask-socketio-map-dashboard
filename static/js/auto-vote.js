@@ -14,7 +14,7 @@ $(document).ready(function () {
      */
     function makeVote() {
         var optionIdx = Math.floor((Math.random() * 100)),
-            optionToSelect = optionIdx > 30 ? 1 : 0;
+            optionToSelect = optionIdx > 20 ? 0 : 1;
         $('#' + options[optionToSelect]).click();
     }
 
