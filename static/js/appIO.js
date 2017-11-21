@@ -1,73 +1,14 @@
 $(window).load(function () {
 
-    map = newMap('#map', doneMap);
-
-    var namespace = '/map-dashboard';
+    var namespace = '/map-dashboard',
+        currentUserId;
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
 
-    var currentUserId;
-
     /**
-     * Initializing a map
+     * Initializing the map
      */
-    function newMap(selector, doneFunc) {
-        var $elem = $(selector), $parent = $elem.parent(), mapHeight = $parent[0].offsetHeight;
-        $elem.height(mapHeight);
-
-        return new Datamap({
-            element: $elem[0],
-            scope: 'esp',
-            fills: {
-                defaultFill: "#ABDDA4"
-            },
-            done: doneFunc,
-            geographyConfig: {
-                dataUrl: '/static/libs/json/esp.topo.json',
-                highlightBorderColor: '#6e71da',
-                popupTemplate: function (geography, data) {
-                    return '<div class="hoverinfoww">' + geography.properties.name + '</div>'
-                },
-                highlightBorderWidth: 3
-            },
-            setProjection: function (element) {
-                var projection = d3.geo.mercator()
-                    .scale(2300)
-                    .center([-4, 40])
-                    .translate([element.offsetWidth / 2, element.offsetHeight / 2]);
-                var path = d3.geo.path().projection(projection);
-                return {path: path, projection: projection};
-            }
-        });
-    }
-
-    /**
-     * Function to be called on map rendered is done
-     */
-    function doneMap(map) {
-        map.labels();
-
-        // Adding all the posibilities to the select input
-        var provinceIDs = [];
-        d3.selectAll(".labels text").each(function (d, i) {
-            var provinceID = d3.select(this).attr("id");
-            if (provinceID !== "-99") // library default value for unmmaped nodes
-                provinceIDs.push(provinceID)
-        });
-
-        // Adding a select with all the provinces
-        var $provincesSelector = $('#provinceElement');
-        provinceIDs.forEach(function (provinceID, idx) {
-            $provincesSelector.append($('<option/>').attr('id', provinceID).text(provinceID))
-        });
-
-
-        // Initializing materialize
-        $('select').material_select();
-
-        $('#Huelva').text('78');
-        $('#Madrid').text('46');
-    }
+    map = newMap('#map', doneMap);
 
     /**
      * Initializing this user
@@ -85,40 +26,109 @@ $(window).load(function () {
 
 
     /**
-     * Updating a city number
+     * Updating a list of cities
+     * @param {Object} cities - Object with key as provinceID and value as updated number of votes
      */
-    socket.on('city_update', function (data) {
-
+    socket.on('update_cities', function (cities) {
+        for (var provinceID in cities) {
+            if (cities.hasOwnProperty(provinceID)) {
+                $('#' + provinceID).text(cities[provinceID]);
+            }
+        }
     });
 
     /**
-     * Getting the whole map status, usually to initialize it
+     * Initializing a map
+     * @param {String} selector - JQuery selector
+     * @param {Function} doneFunc - Callback function to be executed when the map is plot
      */
-    socket.on('map_status', function (grid) {
+    function newMap(selector, doneFunc) {
+        var
+            $elem = $(selector),
+            $parent = $elem.parent(),
+            mapHeight = $parent[0].offsetHeight;
+        $elem.height(mapHeight);
 
-    });
-
-    /**
-     * Updating a city of the map
-     * @param position: list of 2 elements, [X,Y], starting on 1,1
-     * @param symbol: string with the symbol representing this cell
-     * @param positionUserId: userId that owns the position we need to move
-     * @param remove: if some value is here, the position will be removed
-     */
-    function updateCityData(position, symbol, positionUserId, remove) {
-
+        return new Datamap({
+            element: $elem[0],
+            scope: 'esp',
+            fills: {
+                defaultFill: "#ABDDA4"
+            },
+            done: doneFunc,
+            geographyConfig: {
+                dataUrl: '/static/libs/json/esp.topo.json',
+                highlightBorderColor: '#6e71da',
+                popupTemplate: function (geography, data) {
+                    return '<div class="hoverinfo">' + geography.properties.name + '</div>'
+                },
+                highlightBorderWidth: 3
+            },
+            setProjection: function (element) {
+                var projection = d3.geo.mercator()
+                    .scale(2300)
+                    .center([-4, 40])
+                    .translate([element.offsetWidth / 2, element.offsetHeight / 2]);
+                var path = d3.geo.path().projection(projection);
+                return {path: path, projection: projection};
+            }
+        });
     }
 
-    $('#btn-up').on('click', function (e) {
-        voteCity('up');
-    });
-    $('#btn-down').on('click', function (e) {
-        voteCity('down');
-    });
+    /**
+     * Function to be called on map rendered is done
+     * @param {Datamap} map - Datamap object
+     */
+    function doneMap(map) {
+        map.labels();
 
+        // Adding all the possibilities to the select input
+        var provinceIDs = [];
+        d3.selectAll(".labels text").each(function (d, i) {
+            var provinceID = d3.select(this).attr("id");
+            if (provinceID !== "-99") // library default value for unmmaped nodes
+                provinceIDs.push(provinceID)
+        });
+
+        // Adding a select with all the provinces
+        var $provincesSelector = $('#provinceElement');
+        provinceIDs.forEach(function (provinceID) {
+            $provincesSelector.append($('<option/>').attr('id', provinceID).text(provinceID))
+        });
+
+        // Getting one province randomly selected
+        var optionIdx = Math.floor((Math.random() * provinceIDs.length)),
+            randomProvinceID = provinceIDs[optionIdx];
+
+        $provincesSelector.val(randomProvinceID);
+
+        // Initializing materialize
+        $provincesSelector.material_select();
+
+
+        // Voting for a province
+        $('button').on('click', function (e) {
+            var direction = 'up';
+            if ($(e.target).text() === 'thumb_down') direction = 'down';
+            voteCity(direction);
+        })
+    }
+
+    /**
+     * Sending information about this vote to the server
+     * @param {String} direction - (up, down)
+     */
     function voteCity(direction) {
-        var cityInfo = 'Cordoba';
-        socket.emit('userVote', {direction: direction, city: cityInfo});
+        var selectedID = $('#provinceElement').val();
+        if (!selectedID) {
+            Materialize.toast('Please select a province', 2000); // 4000 is the duration of the toast
+            return;
+        }
+
+        Materialize.toast('Voting ' + selectedID + ' ' + direction, 500);
+
+        // Sending to the server the vote of the user
+        socket.emit('userVote', {direction: direction, provinceID: selectedID});
     }
 
     $(document).keydown(function (e) {

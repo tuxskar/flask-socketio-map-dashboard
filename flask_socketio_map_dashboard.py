@@ -1,34 +1,22 @@
-import random
-import string
-
 from flask import Flask, render_template, request
 from flask_assets import Environment
-from flask_socketio import SocketIO, emit, join_room, send
+from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
 assets = Environment(app)
 
-GRID_DIMENSIONS = (20, 10)
-
-GRID = {}
+MAP = {}
 
 users_connected = set()
-
-AVAILABLE_SYMBOLS = [x for x in string.ascii_uppercase if x not in 'AEIOU']
 
 
 @app.route('/')
 def index():
     auto_move = request.args.get('auto_move')
     max_time_wait = int(auto_move) if auto_move and auto_move.isnumeric() else 300
-    print(max_time_wait)
     return render_template('index.html', auto_move=auto_move, max_time_wait=max_time_wait)
-
-
-def get_init_position():
-    return tuple([random.choice(range(x)) + 1 for x in GRID_DIMENSIONS])
 
 
 @socketio.on('connect', namespace='/map-dashboard')
@@ -37,61 +25,30 @@ def on_connect():
     user_id = request.sid
     users_connected.add(user_id)
 
-    # Calculate the user_id, symbol and initial position
-    symbol = random.choice(AVAILABLE_SYMBOLS)
-    init_position = get_init_position()
-    payload = dict(userId=user_id, symbol=symbol, pos=init_position)
-
-    # adding the new point to the grid
-    GRID[user_id] = dict(pos=init_position, symbol=symbol)
-
-    # Sent to the user the grid status
-    send(dict(userId=user_id, symbol=symbol, gridDimension=GRID_DIMENSIONS))
-    emit('grid_status', GRID)
-
-    # Sent in broadcast the new user, the new symbol and the new position
-    emit('user_position', payload, broadcast=True)
+    # Sent to the user the map status
+    emit('update_cities', MAP)
 
     # Send in broadcast the actual number of connected users
     emit('users_connected', len(users_connected), broadcast=True)
 
 
-@socketio.on('movement', namespace='/map-dashboard')
-def on_movement(data):
-    # get the user_id
-    user_id = request.sid
-
-    # get get the actual position
-    user_info = GRID.get(user_id)
-    if user_info:
-        actual_pos = user_info['pos']
-        symbol = user_info['symbol']
-    else:
-        return
-
+@socketio.on('userVote', namespace='/map-dashboard')
+def on_vote(data):
     # calculate the new position
     direction = data.get('direction')
-    new_position = get_new_position(actual_pos, direction)
 
-    # updating the grid with the new user position
-    GRID[user_id] = dict(pos=new_position, symbol=symbol)
+    province_id = data.get('provinceID')
 
-    # broadcast the movement of the user
-    payload = dict(userId=user_id, symbol=symbol, pos=new_position)
-    emit('user_position', payload, broadcast=True)
+    delta = 2
+    if direction == 'down':
+        delta = -1
 
+    # Updating province_id with minimum value of 0 in memory
+    MAP[province_id] = max(MAP.get(province_id, 0) + delta, 0)
 
-def get_new_position(position, direction):
-    x, y = 0, 0
-    if direction == 'up':
-        x, y = 0, -1
-    elif direction == 'down':
-        x, y = 0, 1
-    elif direction == 'left':
-        x, y = -1, 0
-    elif direction == 'right':
-        x, y = 1, 0
-    return max(min(position[0] + x, GRID_DIMENSIONS[0]), 1), max(min(position[1] + y, GRID_DIMENSIONS[1]), 1)
+    # Sending the update to all the users connected
+    payload = {province_id: MAP[province_id]}
+    emit('update_cities', payload, broadcast=True)
 
 
 @socketio.on('disconnect', namespace='/map-dashboard')
@@ -99,12 +56,6 @@ def on_disconnect():
     # Removing the user from all the rooms where he is and broadcasting the new number
     user_id = request.sid
     users_connected.remove(user_id)
-
-    # removing the position of the user on the GRID
-    del GRID[user_id]
-
-    # Notifying the rest of users that this one have left
-    emit('user_position', dict(userId=user_id, remove=True), broadcast=True)
 
     # Sending the new number of users connected
     emit('users_connected', len(users_connected), broadcast=True)
