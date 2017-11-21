@@ -13,8 +13,9 @@ $(document).ready(function () {
      * Voting for a province
      */
     function makeVote() {
-        var optionIdx = Math.floor((Math.random() * options.length));
-        $('#' + options[optionIdx]).click();
+        var optionIdx = Math.floor((Math.random() * 100)),
+            optionToSelect = optionIdx > 30 ? 1 : 0;
+        $('#' + options[optionToSelect]).click();
     }
 
     /**

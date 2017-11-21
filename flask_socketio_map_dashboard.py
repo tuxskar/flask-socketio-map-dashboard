@@ -39,9 +39,13 @@ def on_vote(data):
 
     province_id = data.get('provinceID')
 
-    delta = 2
+    # Getting the delta to add to the province ID
     if direction == 'down':
         delta = -1
+    elif direction == 'up':
+        delta = 1
+    else:
+        return
 
     # Updating province_id with minimum value of 0 in memory
     MAP[province_id] = max(MAP.get(province_id, 0) + delta, 0)
