@@ -34,6 +34,7 @@ def on_connect():
 
 @socketio.on('userVote', namespace='/map-dashboard')
 def on_vote(data):
+    print(data)
     # calculate the new position
     direction = data.get('direction')
 

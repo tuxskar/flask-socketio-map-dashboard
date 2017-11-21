@@ -32,7 +32,13 @@ $(window).load(function () {
     socket.on('update_cities', function (cities) {
         for (var provinceID in cities) {
             if (cities.hasOwnProperty(provinceID)) {
-                $('#' + provinceID).text(cities[provinceID]);
+                var $text = $('#' + provinceID);
+                $text.text(cities[provinceID]);
+                $text.addClass('updated');
+                var removeUpdated = function () {
+                    $text.removeClass('updated');
+                };
+                setTimeout(removeUpdated, 500);
             }
         }
     });
@@ -93,7 +99,7 @@ $(window).load(function () {
         // Adding a select with all the provinces
         var $provincesSelector = $('#provinceElement');
         provinceIDs.forEach(function (provinceID) {
-            $provincesSelector.append($('<option/>').attr('id', provinceID).text(provinceID))
+            $provincesSelector.append($('<option/>').attr('value', provinceID).text(provinceID.replace(/-/g, ' ')))
         });
 
         // Getting one province randomly selected
@@ -112,6 +118,17 @@ $(window).load(function () {
             if ($(e.target).text() === 'thumb_down') direction = 'down';
             voteCity(direction);
         })
+
+        // Selecting the province on click
+        map.svg.selectAll('.datamaps-subunit').on('click', function (geography) {
+            var provinceID = geography.properties.name.replace(/ /g, '-'),
+                $provincesSelector = $('#provinceElement');
+
+            $provincesSelector.val(provinceID);
+            // Initializing materialize
+            $provincesSelector.material_select();
+
+        });
     }
 
     /**

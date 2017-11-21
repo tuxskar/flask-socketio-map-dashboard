@@ -61,3 +61,19 @@ html, body {
     -webkit-margin-start: 0;
     -webkit-margin-end: 0;
 }
+
+.updated {
+    animation-name: colorBlink;
+    animation-duration: 2s;
+}
+
+@keyframes colorBlink {
+    from {
+        fill: white;
+        font-size: 12px;
+    }
+    to {
+        fill: black;
+        font-size: 11px;
+    }
+}

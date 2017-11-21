@@ -425,7 +425,7 @@
         layer.append("text")
           .attr("x", x)
           .attr("y", y)
-          .attr("id", d.properties.name || d.id)
+          .attr("id", (d.properties.name || d.id).replace(/ /g, '-'))
           .style("font-size", (options.fontSize || 10) + 'px')
           .style("font-family", options.fontFamily || "Verdana")
           .style("fill", "#000" || options.labelColor || "#000")
