@@ -14,9 +14,14 @@ users_connected = set()
 
 @app.route('/')
 def index():
-    auto_move = request.args.get('auto_move')
-    max_time_wait = int(auto_move) if auto_move and auto_move.isnumeric() else 300
-    return render_template('index.html', auto_move=auto_move, max_time_wait=max_time_wait)
+    auto_vote = request.args.get('auto_vote')
+    reset_votes = request.args.get('reset_votes')
+    if reset_votes:
+        MAP = {}
+        emit('update_cities', MAP, broadcast=True)
+
+    max_time_wait = int(auto_vote) if auto_vote and auto_vote.isnumeric() else 300
+    return render_template('index.html', auto_move=auto_vote, max_time_wait=max_time_wait)
 
 
 @socketio.on('connect', namespace='/map-dashboard')
