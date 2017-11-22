@@ -32,8 +32,18 @@ html, body {
 }
 
 .footer-content {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
+}
+
+@media only screen and (max-width: 600px) {
+    #toast-container {
+        min-width: 100%;
+        bottom: unset;
+        top: 0;
+    }
 }
 
 .footer-content div {
@@ -62,12 +72,17 @@ html, body {
     -webkit-margin-end: 0;
 }
 
-.updated {
-    animation-name: colorBlink;
-    animation-duration: 2s;
+.updated-up {
+    animation-name: colorBlinkWhite;
+    animation-duration: 1s;
 }
 
-@keyframes colorBlink {
+.updated-down {
+    animation-name: colorBlinkRed;
+    animation-duration: 1s;
+}
+
+@keyframes colorBlinkWhite {
     from {
         fill: white;
         font-size: 12px;
@@ -76,4 +91,20 @@ html, body {
         fill: black;
         font-size: 11px;
     }
+}
+
+@keyframes colorBlinkRed {
+    from {
+        fill: red;
+        font-size: 12px;
+    }
+    to {
+        fill: black;
+        font-size: 11px;
+    }
+}
+
+.github-icon{
+    color: white;
+
 }

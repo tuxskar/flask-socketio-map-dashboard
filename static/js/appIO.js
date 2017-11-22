@@ -32,13 +32,19 @@ $(window).load(function () {
     socket.on('update_cities', function (cities) {
         for (var provinceID in cities) {
             if (cities.hasOwnProperty(provinceID)) {
-                var $text = $('#' + provinceID);
-                $text.text(cities[provinceID]);
-                $text.addClass('updated');
+                var $text = $('#' + provinceID),
+                    actualValue = parseInt($text.text()),
+                    newValue = cities[provinceID],
+                    direction = newValue < actualValue ? 'down' : 'up',
+                    newClass = 'updated-' + direction;
+
+
+                $text.text(newValue);
+                $text.addClass(newClass);
                 var removeUpdated = function () {
-                    $text.removeClass('updated');
+                    $text.removeClass();
                 };
-                setTimeout(removeUpdated, 500);
+                setTimeout(removeUpdated, 100);
             }
         }
     });

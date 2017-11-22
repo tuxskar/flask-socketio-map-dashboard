@@ -504,6 +504,7 @@
         .on('mouseover', function ( datum ) {
           var $this = d3.select(this);
 
+          console.log('esto es this: ', $this);
           if (options.highlightOnHover) {
             //save all previous attributes for mouseout
             var previousAttributes = {

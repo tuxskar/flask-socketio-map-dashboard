@@ -6,6 +6,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     {% assets output="gen/libs.css",
         "libs/css/materialize.css",
+        "libs/css/font-awesome.css",
         "css/appIO.css" %}
         <link rel="stylesheet" href="{{ ASSET_URL }}">
 
@@ -14,13 +15,12 @@
 </head>
 
 <body>
+
 <div id="wrapper">
     <div id="header" class="light-blue lighten-1">
         <div class="container"><a href="#" class="brand-logo left">Codemotion 2017</a>
-            <ul class="right">
-                <li><span id="user-cnt">0</span> Users</li>
-                <a class="grey-text text-lighten-4 right"
-                   href="https://github.com/tuxskar/flask-socketio-map-dashboard">Github</a>
+            <ul class="right brand-logo">
+                <li><span id="user-cnt">0</span> Users <a href="https://github.com/tuxskar/flask-socketio-map-dashboard" class="github-icon"><i class="fa fa-github" aria-hidden="true"></i></a></li>
             </ul>
         </div>
     </div>
@@ -32,7 +32,8 @@
 
     <div id="footer">
         <div class="col s12 footer-content">
-            <button class="waves-effect waves-light btn" id="vote-down"><i class="material-icons">thumb_down</i></button>
+            <button class="waves-effect waves-light btn" id="vote-down"><i class="material-icons">thumb_down</i>
+            </button>
             <div class="input-field col s12 m6">
                 <select id="provinceElement">
                     <option value="" disabled selected>Choose a province</option>
