@@ -148,7 +148,7 @@ $(window).load(function () {
             return;
         }
 
-        Materialize.toast('Voting ' + selectedID + ' ' + direction, 500);
+        Materialize.toast('Voting ' + selectedID + ' ' + direction, 200);
 
         // Sending to the server the vote of the user
         socket.emit('userVote', {direction: direction, provinceID: selectedID});

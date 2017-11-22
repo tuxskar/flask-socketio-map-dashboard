@@ -94,3 +94,4 @@ static/gen/
 static/css/*.bkp.*
 *.DS_Store
 .idea/*
+static/Font-Awesome
