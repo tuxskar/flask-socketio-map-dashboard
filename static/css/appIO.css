@@ -104,7 +104,11 @@ html, body {
     }
 }
 
-.github-icon{
+.github-icon {
     color: black;
     padding-left: 10px;
+}
+
+#reset-votes {
+    display: none;
 }

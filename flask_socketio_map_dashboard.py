@@ -16,12 +16,8 @@ users_connected = set()
 def index():
     auto_vote = request.args.get('auto_vote')
     reset_votes = request.args.get('reset_votes')
-    if reset_votes:
-        MAP = {}
-        emit('update_cities', MAP, broadcast=True)
-
     max_time_wait = int(auto_vote) if auto_vote and auto_vote.isnumeric() else 300
-    return render_template('index.html', auto_move=auto_vote, max_time_wait=max_time_wait)
+    return render_template('index.html', auto_move=auto_vote, max_time_wait=max_time_wait, reset_votes=reset_votes)
 
 
 @socketio.on('connect', namespace='/map-dashboard')
@@ -39,7 +35,6 @@ def on_connect():
 
 @socketio.on('userVote', namespace='/map-dashboard')
 def on_vote(data):
-    print(data)
     # calculate the new position
     direction = data.get('direction')
 
@@ -59,6 +54,15 @@ def on_vote(data):
     # Sending the update to all the users connected
     payload = {province_id: MAP[province_id]}
     emit('update_cities', payload, broadcast=True)
+
+
+@socketio.on('reset-votes', namespace='/map-dashboard')
+def on_reset_votes():
+    """ Reset the votes and sen the new map in broadcast"""
+    global MAP
+    MAP = {}
+
+    emit('reset_votes', MAP, broadcast=True)
 
 
 @socketio.on('disconnect', namespace='/map-dashboard')

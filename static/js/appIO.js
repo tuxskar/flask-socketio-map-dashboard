@@ -2,7 +2,7 @@ $(window).load(function () {
 
     var namespace = '/map-dashboard',
         currentUserId;
-    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+    socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
 
     /**
@@ -120,8 +120,9 @@ $(window).load(function () {
 
         // Voting for a province
         $('button').on('click', function (e) {
-            var direction = 'up';
+            var direction;
             if ($(e.target).text() === 'thumb_down') direction = 'down';
+            if ($(e.target).text() === 'thumb_up') direction = 'up';
             voteCity(direction);
         })
 
@@ -142,6 +143,8 @@ $(window).load(function () {
      * @param {String} direction - (up, down)
      */
     function voteCity(direction) {
+        if (!direction) return;
+
         var selectedID = $('#provinceElement').val();
         if (!selectedID) {
             Materialize.toast('Please select a province', 2000); // 4000 is the duration of the toast
@@ -154,6 +157,7 @@ $(window).load(function () {
         socket.emit('userVote', {direction: direction, provinceID: selectedID});
     }
 
+    // Allow the user to use the arrow keys
     $(document).keydown(function (e) {
         switch (e.which) {
             case 38: // up
@@ -169,4 +173,9 @@ $(window).load(function () {
         }
         e.preventDefault(); // prevent the default action (scroll / move caret)
     });
+
+    // Reset all the provinces text
+    socket.on('reset_votes', function () {
+        $('.labels text').text('')
+    })
 });
