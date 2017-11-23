@@ -40,9 +40,8 @@
                 </select>
             </div>
             <button class="waves-effect waves-light btn" id="vote-up"><i class="material-icons">thumb_up</i></button>
-{#            <button class="waves-effect waves-light btn hidden" id="reset-votes"><i class="material-icons">autorenew</i></button>#}
-            <button class="waves-effect waves-light btn hidden" id="reset-votes"><i class="material-icons">autorenew</i></button>
         </div>
+        <button class="waves-effect waves-light btn hidden" id="reset-votes"><i class="material-icons">autorenew</i></button>
     </div>
 
 
@@ -62,8 +61,8 @@
     <script type="text/javascript" src="{{ ASSET_URL }}"></script>
 {% endassets %}
 
-{% if auto_move %}
-    {% assets output="gen/appIO-auto_move.js", "js/auto-vote.js" %}
+{% if auto_vote %}
+    {% assets output="gen/appIO-auto-vote.js", "js/auto-vote.js" %}
         <script>
             userMaxTimeWait = {{ max_time_wait }};
         </script>
@@ -72,7 +71,7 @@
 {% endif %}
 
 {% if reset_votes %}
-    {% assets output="gen/appIO-reset_votes.js", "js/reset-votes.js" %}
+    {% assets output="gen/appIO-reset-votes.js", "js/reset-votes.js" %}
         <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}
 {% endif %}

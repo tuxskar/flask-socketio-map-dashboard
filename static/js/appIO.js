@@ -20,7 +20,7 @@ $(window).load(function () {
     /**
      * Updating the connected users
      */
-    socket.on('users_connected', function (lenUsers) {
+    socket.on('usersConnected', function (lenUsers) {
         $('#user-cnt').text(lenUsers)
     });
 
@@ -29,7 +29,7 @@ $(window).load(function () {
      * Updating a list of cities
      * @param {Object} cities - Object with key as provinceID and value as updated number of votes
      */
-    socket.on('update_cities', function (cities) {
+    socket.on('updateCities', function (cities) {
         for (var provinceID in cities) {
             if (cities.hasOwnProperty(provinceID)) {
                 var $text = $('#' + provinceID),
@@ -124,7 +124,7 @@ $(window).load(function () {
             if ($(e.target).text() === 'thumb_down') direction = 'down';
             if ($(e.target).text() === 'thumb_up') direction = 'up';
             voteCity(direction);
-        })
+        });
 
         // Selecting the province on click
         map.svg.selectAll('.datamaps-subunit').on('click', function (geography) {
@@ -175,7 +175,7 @@ $(window).load(function () {
     });
 
     // Reset all the provinces text
-    socket.on('reset_votes', function () {
+    socket.on('resetVotes', function () {
         $('.labels text').text('')
     })
 });
